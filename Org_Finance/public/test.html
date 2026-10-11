@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Animation test</title>
+<style>
+  body{font-family:Arial,sans-serif;background:#cfd8dc;margin:20px}
+  video{width:420px;max-width:90vw;outline:3px dashed red;display:block;margin:10px 0}
+  pre{background:#fff;padding:12px;border-radius:6px}
+</style>
+</head>
+<body>
+<h2>Animation test</h2>
+<p>Login animation:</p>
+<video id="v1" src="/animations/login.webm" autoplay loop muted playsinline></video>
+<p>Dashboard animation:</p>
+<video id="v2" src="/animations/dashboard.webm" autoplay loop muted playsinline></video>
+<pre id="out">checking...</pre>
+<script>
+function report(){
+  let t='';
+  [['login','v1'],['dashboard','v2']].forEach(([n,id])=>{
+    const v=document.getElementById(id);
+    t+=n+': readyState='+v.readyState+' (4 = loaded), paused='+v.paused+
+       ', size='+v.videoWidth+'x'+v.videoHeight+
+       ', error='+(v.error?('code '+v.error.code+' '+v.error.message):'none')+'\n';
+  });
+  document.getElementById('out').textContent=t;
+}
+document.querySelectorAll('video').forEach(v=>{
+  v.addEventListener('error',report);v.addEventListener('playing',report);
+  v.addEventListener('loadeddata',report);
+  const p=v.play(); if(p&&p.catch)p.catch(e=>{document.getElementById('out').textContent+='play blocked: '+e.message+'\n';});
+});
+setInterval(report,1000);
+</script>
+</body>
+</html>
